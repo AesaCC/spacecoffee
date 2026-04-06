@@ -39,18 +39,10 @@ class SplashScreen extends StatelessWidget {
 class _Background extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: RadialGradient(
-          center: Alignment(0.1, -0.15),
-          radius: 1.0,
-          colors: [
-            Color(0xFF2A1800), // warm amber — instrument glow
-            Color(0xFF120C00), // deep amber-black
-            Color(0xFF0D0D1A), // cold space at edges
-          ],
-          stops: [0.0, 0.45, 1.0],
-        ),
+    return SizedBox.expand(
+      child: Image.asset(
+        'assets/images/splash_bg.jpeg',
+        fit: BoxFit.cover,
       ),
     );
   }
