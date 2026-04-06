@@ -186,8 +186,9 @@ class AssetDetailScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
 
-            // Chart
-            Expanded(
+            // Chart — fixed height so BUY/SELL buttons always fit on screen
+            SizedBox(
+              height: 260,
               child: asyncHistory.when(
                 loading: () => const Center(
                   child: CircularProgressIndicator(
@@ -301,6 +302,7 @@ class _PriceChart extends StatelessWidget {
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,
+          horizontalInterval: (maxY - minY) / 4,
           getDrawingHorizontalLine: (_) => const FlLine(
             color: Color(0xFF2A2A4A),
             strokeWidth: 1,
@@ -318,6 +320,7 @@ class _PriceChart extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 60,
+              interval: (maxY - minY) / 4, // show ~4 labels only
               getTitlesWidget: (value, _) => Padding(
                 padding: const EdgeInsets.only(left: 8),
                 child: Text(
