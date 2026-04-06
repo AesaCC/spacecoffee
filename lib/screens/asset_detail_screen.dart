@@ -1,9 +1,12 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/asset.dart';
 import '../models/price_point.dart';
 import '../providers/history_provider.dart';
+import '../providers/player_portfolio_provider.dart';
+import 'trade_sheet.dart';
 
 class AssetDetailScreen extends ConsumerWidget {
   final Asset asset;
@@ -107,7 +110,70 @@ class AssetDetailScreen extends ConsumerWidget {
               style: const TextStyle(color: Color(0xFF8B8B9E), fontSize: 13),
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: 16),
+
+            // Holding info (if player owns any)
+            Builder(builder: (context) {
+              final holding = ref
+                  .watch(playerPortfolioProvider)
+                  .holdings[asset.ticker];
+              if (holding == null) return const SizedBox.shrink();
+              final pnl = holding.pnl(asset.price);
+              final pnlColor = pnl >= 0
+                  ? const Color(0xFF4CAF50)
+                  : const Color(0xFFE53935);
+              return Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1A1A2E),
+                  border: Border.all(color: const Color(0xFF2A2A4A)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('YOUR HOLDING',
+                            style: GoogleFonts.ibmPlexMono(
+                                color: const Color(0xFF8B6914),
+                                fontSize: 10,
+                                letterSpacing: 2)),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${holding.quantity.toStringAsFixed(4)} ${asset.ticker}',
+                          style: GoogleFonts.ibmPlexMono(
+                              color: const Color(0xFFE0D5B8),
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text('P&L',
+                            style: GoogleFonts.ibmPlexMono(
+                                color: const Color(0xFF8B6914),
+                                fontSize: 10,
+                                letterSpacing: 2)),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${pnl >= 0 ? '+' : ''}₡ ${pnl.toStringAsFixed(2)}',
+                          style: GoogleFonts.ibmPlexMono(
+                              color: pnlColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }),
+
+            const SizedBox(height: 16),
 
             // Chart label
             const Text(
@@ -140,6 +206,60 @@ class AssetDetailScreen extends ConsumerWidget {
                 ),
               ),
             ),
+
+            const SizedBox(height: 16),
+
+            // BUY / SELL buttons
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 52,
+                    child: ElevatedButton(
+                      onPressed: () =>
+                          showTradeSheet(context, asset),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4CAF50),
+                        foregroundColor: Colors.white,
+                        shape: const RoundedRectangleBorder(),
+                        elevation: 0,
+                      ),
+                      child: Text('BUY',
+                          style: GoogleFonts.ibmPlexMono(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 3)),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: SizedBox(
+                    height: 52,
+                    child: ElevatedButton(
+                      onPressed: () =>
+                          showTradeSheet(context, asset, startOnSell: true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1A1A2E),
+                        foregroundColor: const Color(0xFFE53935),
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                              color: Color(0xFFE53935), width: 1),
+                          borderRadius: BorderRadius.zero,
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Text('SELL',
+                          style: GoogleFonts.ibmPlexMono(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 3)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
           ],
         ),
       ),
