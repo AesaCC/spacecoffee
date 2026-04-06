@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'screens/home_screen.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
   runApp(
@@ -26,7 +26,7 @@ class SpaceCoffeeApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: const Color(0xFF0D0D1A),
       ),
-      home: const HomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }
