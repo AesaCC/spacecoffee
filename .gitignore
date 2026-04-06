@@ -46,3 +46,4 @@ app.*.map.json
 
 # Claude Code local memory
 .claude/
+lib/config.dart
