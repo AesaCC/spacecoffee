@@ -14,4 +14,11 @@ class Asset {
     required this.changePercent,
     this.isLive = false,
   });
+
+  // Ticker is unique — used as identity for Riverpod family providers
+  @override
+  bool operator ==(Object other) => other is Asset && other.ticker == ticker;
+
+  @override
+  int get hashCode => ticker.hashCode;
 }

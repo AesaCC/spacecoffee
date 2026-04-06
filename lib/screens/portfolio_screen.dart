@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/asset.dart';
 import '../providers/portfolio_provider.dart';
+import 'asset_detail_screen.dart';
 
 class PortfolioScreen extends ConsumerWidget {
   const PortfolioScreen({super.key});
@@ -99,7 +100,16 @@ class PortfolioScreen extends ConsumerWidget {
                   height: 1,
                 ),
                 itemBuilder: (context, index) {
-                  return AssetTile(asset: assets[index]);
+                  return AssetTile(
+                    asset: assets[index],
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            AssetDetailScreen(asset: assets[index]),
+                      ),
+                    ),
+                  );
                 },
               ),
             ),
@@ -112,7 +122,8 @@ class PortfolioScreen extends ConsumerWidget {
 
 class AssetTile extends StatelessWidget {
   final Asset asset;
-  const AssetTile({super.key, required this.asset});
+  final VoidCallback onTap;
+  const AssetTile({super.key, required this.asset, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +133,7 @@ class AssetTile extends StatelessWidget {
     final changePrefix = isUp ? '+' : '';
 
     return ListTile(
+      onTap: onTap,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       title: Row(
         children: [
